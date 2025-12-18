@@ -1,0 +1,64 @@
+{
+  "name": "@mecaptcha/verify-react",
+  "version": "0.1.0",
+  "description": "React components for MeCaptcha SMS verification",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./styles.css": "./dist/index.css"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean --external react --external react-dom",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch --external react --external react-dom",
+    "lint": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "mecaptcha",
+    "react",
+    "2fa",
+    "mfa",
+    "sms",
+    "verification",
+    "components"
+  ],
+  "author": "MeCaptcha",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mecaptcha/verify",
+    "directory": "packages/react"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "dependencies": {
+    "@mecaptcha/verify-sdk": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.8"
+  }
+}
+
+
+
