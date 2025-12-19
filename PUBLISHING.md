@@ -24,7 +24,7 @@ This guide covers the process for publishing the `@mecaptcha/verify-sdk` and `@m
 **Quick version workflow:**
 1. Make changes and create a changeset: `pnpm changeset`
 2. Commit changes and changeset file
-3. When ready to release: `pnpm version` (automatically bumps versions)
+3. When ready to release: `pnpm run version:changeset` (automatically bumps versions)
 4. Publish: `pnpm release` (builds and publishes)
 
 **No manual version updates needed!** Changesets automatically:
@@ -74,7 +74,7 @@ pnpm publish --access public
 
 3. **Version packages** (when ready to release):
    ```bash
-   pnpm version
+   pnpm run version:changeset
    # This automatically bumps versions and generates changelogs
    git add .
    git commit -m "chore: version packages"

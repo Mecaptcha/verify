@@ -50,8 +50,10 @@ git push
 When you're ready to release, run:
 
 ```bash
-pnpm version
+pnpm run version:changeset
 ```
+
+**Note**: Use `pnpm run version:changeset` (not `pnpm version`) because `pnpm version` is a built-in command.
 
 This will:
 - ✅ Read all changeset files
@@ -62,7 +64,7 @@ This will:
 
 **You can review the changes before committing:**
 ```bash
-pnpm version
+pnpm run version:changeset
 # Review the changes
 git add .
 git commit -m "chore: version packages"
