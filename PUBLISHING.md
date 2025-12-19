@@ -189,9 +189,102 @@ jobs:
 
 ## Troubleshooting
 
-- **"Package name already exists"**: Version already published, increment version
+### Authentication Issues
+
+**"Access token expired or revoked"** or **"E404"**:
+
+#### Option 1: Using npm login (Interactive)
+
+1. **Log in to npm**:
+   ```bash
+   npm login
+   ```
+   Enter your npm username, password, and email when prompted.
+
+2. **Verify you're logged in**:
+   ```bash
+   npm whoami
+   ```
+   Should show your npm username.
+
+3. **Check organization access**:
+   ```bash
+   npm org ls mecaptcha
+   ```
+   Ensure you're a member of the `@mecaptcha` organization.
+
+#### Option 2: Using Access Token (Recommended for CI/CD and 2FA)
+
+**Step 1: Create an Access Token**
+
+1. Go to https://www.npmjs.com/settings/YOUR_USERNAME/tokens
+2. Click **"Generate New Token"**
+3. Choose token type:
+   - **Automation** (recommended for CI/CD) - doesn't expire
+   - **Publish** - for publishing packages
+   - **Read-only** - for reading packages
+4. Copy the token immediately (you won't be able to see it again!)
+
+**Step 2: Configure npm to use the token**
+
+You have several options:
+
+**Option A: Set token in `.npmrc` file (Recommended)**
+
+Create or edit `~/.npmrc` (or `.npmrc` in your project root):
+
+```bash
+# In your home directory (~/.npmrc) or project root (.npmrc)
+echo "//registry.npmjs.org/:_authToken=YOUR_TOKEN_HERE" >> ~/.npmrc
+```
+
+Or manually edit `~/.npmrc`:
+```
+//registry.npmjs.org/:_authToken=npm_YOUR_TOKEN_HERE
+```
+
+**Option B: Use environment variable**
+
+```bash
+export NPM_TOKEN=YOUR_TOKEN_HERE
+```
+
+Then create/update `.npmrc`:
+```
+//registry.npmjs.org/:_authToken=${NPM_TOKEN}
+```
+
+**Option C: Use npm config command**
+
+```bash
+npm config set //registry.npmjs.org/:_authToken YOUR_TOKEN_HERE
+```
+
+**Step 3: Verify token works**
+
+```bash
+npm whoami
+# Should show your username
+```
+
+**Step 4: Publish**
+
+```bash
+pnpm -r publish --access public
+```
+
+**Security Note**: 
+- Never commit tokens to git
+- Add `.npmrc` to `.gitignore` if it contains tokens
+- Use environment variables in CI/CD
+- For automation tokens, use `NPM_TOKEN` environment variable
+
+### Other Common Issues
+
+- **"Package name already exists"**: Version already published, increment version or use changesets
 - **"You do not have permission"**: Ensure you're logged in and have access to `@mecaptcha` org
 - **Build errors**: Ensure SDK is built before building React (for type checking), but bundling happens automatically
+- **"workspace:* dependency"**: This is fine - the SDK is bundled, so it's only needed for dev
 
 ## Current Package Status
 
