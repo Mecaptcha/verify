@@ -52,6 +52,13 @@ import { MeCaptcha } from '@mecaptcha/verify-react';
 ## Quick Start
 
 1. **Get an API key** from [MeCaptcha Dashboard](https://mecaptcha.com/dashboard)
+   
+   **Or use the demo key for testing:**
+   - API Key: `demo`
+   - Test Phone: `+18025551212`
+   - Test Code: `123456`
+   
+   The demo key only works with the test phone number and code above.
 
 2. **Install the package:**
 ```bash
@@ -65,7 +72,7 @@ import { MeCaptcha } from '@mecaptcha/verify-react';
 function App() {
   return (
     <MeCaptcha 
-      apiKey="mec_live_..."
+      apiKey="mec_live_..." // or "demo" for testing
       onVerify={(result) => {
         // User verified! Proceed with protected action
         console.log('Credits awarded:', result.creditsAwarded);

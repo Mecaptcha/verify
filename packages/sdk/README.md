@@ -25,6 +25,25 @@ const verifyResult = await client.verifyCode('+15551234567', '123456');
 console.log('Credits awarded:', verifyResult.creditsAwarded);
 ```
 
+### Demo Mode
+
+For testing and development, you can use the `demo` API key with these test credentials:
+
+```typescript
+const client = new MeCaptchaClient('demo');
+
+// Only works with this specific phone number and code
+const sendResult = await client.sendCode('+18025551212');
+const verifyResult = await client.verifyCode('+18025551212', '123456');
+```
+
+**Demo API Key:**
+- API Key: `demo`
+- Test Phone: `+18025551212`
+- Test Code: `123456`
+
+The demo key only works with the test phone number and code above. All other phone numbers and codes will be rejected.
+
 ## API Reference
 
 ### `new MeCaptchaClient(apiKey, options?)`
@@ -32,13 +51,31 @@ console.log('Credits awarded:', verifyResult.creditsAwarded);
 Creates a new client instance.
 
 **Parameters:**
-- `apiKey` (string, required) - Your MeCaptcha API key
+- `apiKey` (string, required) - Your MeCaptcha API key. Can be:
+  - `"demo"` - For testing (only works with test phone `+18025551212` and code `123456`)
+  - `"mec_live_..."` - Production API key
+  - `"mec_test_..."` - Test API key
 - `options` (object, optional)
-  - `baseUrl` (string) - Custom API base URL
+  - `baseUrl` (string) - Custom API base URL (overrides environment variable)
+
+**Base URL Configuration:**
+The base URL is determined in the following priority order:
+1. `options.baseUrl` (if provided)
+2. `MECAPTCHA_BASE_URL` environment variable
+3. Default: `https://api.mecaptcha.com/v1`
 
 **Example:**
 ```typescript
+// Uses default: https://api.mecaptcha.com
 const client = new MeCaptchaClient('mec_live_abc123');
+
+// Uses custom URL
+const client = new MeCaptchaClient('mec_live_abc123', {
+  baseUrl: 'https://custom-api.example.com'
+});
+
+// Uses environment variable MECAPTCHA_BASE_URL
+// (set via process.env.MECAPTCHA_BASE_URL or window.MECAPTCHA_BASE_URL)
 ```
 
 ### `sendCode(phoneNumber: string): Promise<SendCodeResult>`

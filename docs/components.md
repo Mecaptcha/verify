@@ -286,7 +286,7 @@ import {
 
 The SDK calls these backend endpoints:
 
-**Base URL:** `https://cmpqvlxjwgtcagjixpzg.supabase.co/functions/v1`
+**Base URL:** `https://api.mecaptcha.com/v1` (configurable via `baseUrl` prop or `MECAPTCHA_BASE_URL` environment variable)
 
 **Authentication:** `Authorization: Bearer {apiKey}` header
 

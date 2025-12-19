@@ -5,13 +5,16 @@ import type { VerifyCodeResult } from "@mecaptcha/verify-sdk";
 export interface UseMeCaptchaVerifyOptions {
   onVerify?: (result: VerifyCodeResult) => void;
   onError?: (error: Error) => void;
+  baseUrl?: string;
 }
 
 export function useMeCaptchaVerify(
   apiKey: string,
   options?: UseMeCaptchaVerifyOptions,
 ) {
-  const [client] = useState(() => new MeCaptchaClient(apiKey));
+  const [client] = useState(
+    () => new MeCaptchaClient(apiKey, { baseUrl: options?.baseUrl }),
+  );
   const [phoneNumber, setPhoneNumber] = useState("");
   const [countryCode, setCountryCode] = useState("+1");
   const [code, setCode] = useState("");
@@ -56,7 +59,11 @@ export function useMeCaptchaVerify(
 
   const verifyCode = useCallback(
     async (codeToVerify?: string) => {
-      const codeValue = codeToVerify || code;
+      const codeValue = (codeToVerify || code).trim().replace(/\D/g, "");
+      if (codeValue.length !== 6) {
+        setError("Code must be 6 digits");
+        return;
+      }
       setIsLoading(true);
       setError(null);
 

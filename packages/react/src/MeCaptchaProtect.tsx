@@ -8,8 +8,10 @@ export function MeCaptchaProtect({
   apiKey,
   children,
   onVerified,
+  onError,
   requireReauth,
   storageKey = "mecaptcha_verified",
+  baseUrl,
 }: MeCaptchaProtectProps) {
   const [isVerified, setIsVerified] = useState(false);
   const [verificationResult, setVerificationResult] =
@@ -57,7 +59,14 @@ export function MeCaptchaProtect({
   };
 
   if (!isVerified) {
-    return <MeCaptcha apiKey={apiKey} onVerify={handleVerify} />;
+    return (
+      <MeCaptcha
+        apiKey={apiKey}
+        onVerify={handleVerify}
+        onError={onError}
+        baseUrl={baseUrl}
+      />
+    );
   }
 
   return (

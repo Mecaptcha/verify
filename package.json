@@ -13,9 +13,13 @@
     "lint": "pnpm -r --filter './packages/*' lint",
     "test": "pnpm -r --filter './packages/*' test",
     "clean": "pnpm -r --filter './packages/*' clean && rm -rf node_modules",
-    "typecheck": "pnpm -r --filter './packages/*' typecheck"
+    "typecheck": "pnpm -r --filter './packages/*' typecheck",
+    "changeset": "changeset",
+    "version": "changeset version",
+    "release": "pnpm build && changeset publish"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.29.8",
     "typescript": "^5.6.3"
   },
   "packageManager": "pnpm@9.0.0",
@@ -23,6 +27,3 @@
     "node": ">=18.0.0"
   }
 }
-
-
-

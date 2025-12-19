@@ -3,12 +3,7 @@ import type { DownloadPromptProps } from "../types";
 import { colors } from "../theme";
 
 export function DownloadPrompt({ show }: DownloadPromptProps) {
-  const [theme] = useState<"light" | "dark">(
-    () =>
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light",
-  );
+  const [theme] = useState<"light" | "dark">(() => "light");
   const themeColors = colors[theme];
 
   if (!show) return null;

@@ -1,7 +1,7 @@
 export const colors = {
   light: {
-    primary: "#6366f1",
-    primaryHover: "#4f46e5",
+    primary: "#15099a", // MeCaptcha federal_blue[600]
+    primaryHover: "#090446", // MeCaptcha federal_blue DEFAULT
     background: "#ffffff",
     surface: "#f9fafb",
     text: "#111827",

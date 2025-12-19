@@ -4,7 +4,7 @@ import { CodeInput } from "./components/CodeInput";
 import { DownloadPrompt } from "./components/DownloadPrompt";
 import type { MeCaptchaProps } from "./types";
 import { colors } from "./theme";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function MeCaptcha({
   apiKey,
@@ -12,13 +12,9 @@ export function MeCaptcha({
   onError,
   defaultCountryCode = "+1",
   showBranding = true,
+  baseUrl,
 }: MeCaptchaProps) {
-  const [theme] = useState<"light" | "dark">(
-    () =>
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light",
-  );
+  const [theme] = useState<"light" | "dark">(() => "light");
   const themeColors = colors[theme];
 
   const {
@@ -36,10 +32,15 @@ export function MeCaptcha({
     sendCode,
     verifyCode,
     editNumber,
-  } = useMeCaptchaVerify(apiKey, { onVerify, onError });
+  } = useMeCaptchaVerify(apiKey, { onVerify, onError, baseUrl });
+
+  useEffect(() => {
+    if (countryCode === "+1" && defaultCountryCode !== "+1") {
+      setCountryCode(defaultCountryCode);
+    }
+  }, [defaultCountryCode, countryCode, setCountryCode]);
 
   const isPhoneValid = phoneNumber.length === 10;
-  const isCodeValid = code.length === 6;
 
   return (
     <div
@@ -53,30 +54,6 @@ export function MeCaptcha({
         fontFamily: "system-ui, -apple-system, sans-serif",
       }}
     >
-      {showBranding && (
-        <div style={{ textAlign: "center", marginBottom: "32px" }}>
-          <h2
-            style={{
-              margin: "0 0 8px 0",
-              fontSize: "24px",
-              fontWeight: 700,
-              color: themeColors.primary,
-            }}
-          >
-            MeCaptcha Verify
-          </h2>
-          <p
-            style={{
-              margin: 0,
-              fontSize: "14px",
-              color: themeColors.textSecondary,
-            }}
-          >
-            Secure SMS verification
-          </p>
-        </div>
-      )}
-
       {step === "phone" ? (
         <PhoneInput
           value={phoneNumber}
@@ -93,7 +70,7 @@ export function MeCaptcha({
           <CodeInput
             value={code}
             onChange={setCode}
-            onSubmit={() => verifyCode()}
+            onSubmit={(codeValue) => verifyCode(codeValue)}
             onResend={sendCode}
             phoneNumber={phoneNumber}
             isLoading={isLoading}
@@ -133,25 +110,31 @@ export function MeCaptcha({
         >
           <p
             style={{
-              margin: 0,
+              margin: "0 0 8px 0",
               fontSize: "12px",
               color: themeColors.textSecondary,
             }}
           >
-            Powered by{" "}
-            <a
-              href="https://mecaptcha.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                color: themeColors.primary,
-                textDecoration: "none",
-                fontWeight: 600,
-              }}
-            >
-              MeCaptcha
-            </a>
+            Powered by
           </p>
+          <a
+            href="https://mecaptcha.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-block",
+              textDecoration: "none",
+            }}
+          >
+            <img
+              src="https://www.mecaptcha.com/assets/wordmark.svg"
+              alt="MeCaptcha"
+              style={{
+                height: "20px",
+                width: "auto",
+              }}
+            />
+          </a>
         </div>
       )}
     </div>

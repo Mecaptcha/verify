@@ -12,12 +12,7 @@ export function PhoneInput({
   isValid,
   error,
 }: PhoneInputProps) {
-  const [theme] = useState<"light" | "dark">(
-    () =>
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light",
-  );
+  const [theme] = useState<"light" | "dark">(() => "light");
   const themeColors = colors[theme];
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +33,7 @@ export function PhoneInput({
   };
 
   return (
-    <div style={{ width: "100%", maxWidth: "400px" }}>
+    <div style={{ width: "100%", maxWidth: "400px", margin: "0 auto" }}>
       <label
         htmlFor="phone-input"
         style={{
@@ -67,7 +62,7 @@ export function PhoneInput({
             padding: "12px",
             border: `1px solid ${themeColors.border}`,
             borderRadius: "8px",
-            backgroundColor: themeColors.surface,
+            backgroundColor: "#ffffff",
             color: themeColors.text,
             fontSize: "16px",
             fontFamily: "system-ui, -apple-system, sans-serif",
@@ -95,7 +90,7 @@ export function PhoneInput({
             padding: "12px",
             border: `1px solid ${error ? themeColors.error : themeColors.border}`,
             borderRadius: "8px",
-            backgroundColor: themeColors.surface,
+            backgroundColor: "#ffffff",
             color: themeColors.text,
             fontSize: "16px",
             fontFamily: "system-ui, -apple-system, sans-serif",

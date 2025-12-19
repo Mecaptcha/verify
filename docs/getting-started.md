@@ -8,6 +8,13 @@ MeCaptcha Verify is an SMS-based 2FA service that rewards users with humanity cr
 
 - Node.js 18 or higher
 - A MeCaptcha API key (get one at [mecaptcha.com/dashboard](https://mecaptcha.com/dashboard))
+  
+  **Or use the demo key for testing:**
+  - API Key: `demo`
+  - Test Phone: `+18025551212`
+  - Test Code: `123456`
+  
+  The demo key only works with the test phone number and code above.
 
 ## Installation
 
@@ -43,7 +50,7 @@ import { MeCaptcha } from '@mecaptcha/verify-react';
 function App() {
   return (
     <MeCaptcha
-      apiKey="mec_live_..."
+      apiKey="mec_live_..." // or "demo" for testing
       onVerify={(result) => {
         console.log('User verified!');
         console.log('Credits awarded:', result.creditsAwarded);

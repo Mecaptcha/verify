@@ -7,14 +7,17 @@ export interface MeCaptchaProps {
   defaultCountryCode?: string;
   theme?: "light" | "dark" | "auto";
   showBranding?: boolean;
+  baseUrl?: string;
 }
 
 export interface MeCaptchaProtectProps {
   apiKey: string;
   children: React.ReactNode;
   onVerified?: (result: VerifyCodeResult) => void;
+  onError?: (error: Error) => void;
   requireReauth?: number;
   storageKey?: string;
+  baseUrl?: string;
 }
 
 export interface PhoneInputProps {
@@ -31,7 +34,7 @@ export interface PhoneInputProps {
 export interface CodeInputProps {
   value: string;
   onChange: (value: string) => void;
-  onSubmit: () => void;
+  onSubmit: (code: string) => void;
   onResend: () => void;
   phoneNumber: string;
   isLoading: boolean;

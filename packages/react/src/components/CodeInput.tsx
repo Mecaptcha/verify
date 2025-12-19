@@ -12,12 +12,7 @@ export function CodeInput({
   error,
   resendCooldown,
 }: CodeInputProps) {
-  const [theme] = useState<"light" | "dark">(
-    () =>
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "dark"
-        : "light",
-  );
+  const [theme] = useState<"light" | "dark">(() => "light");
   const themeColors = colors[theme];
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const digits = value.split("");
@@ -50,11 +45,11 @@ export function CodeInput({
       }
 
       if (newValue.length === 6) {
-        setTimeout(() => onSubmit(), 100);
+        setTimeout(() => onSubmit(newValue), 150);
       }
     } else if (cleaned.length === 6) {
       onChange(cleaned);
-      setTimeout(() => onSubmit(), 100);
+      setTimeout(() => onSubmit(cleaned), 150);
     }
   };
 
@@ -71,7 +66,7 @@ export function CodeInput({
     if (cleaned.length > 0) {
       onChange(cleaned);
       if (cleaned.length === 6) {
-        setTimeout(() => onSubmit(), 100);
+        setTimeout(() => onSubmit(cleaned), 150);
       }
     }
   };
@@ -84,7 +79,7 @@ export function CodeInput({
   };
 
   return (
-    <div style={{ width: "100%", maxWidth: "400px" }}>
+    <div style={{ width: "100%", maxWidth: "400px", margin: "0 auto" }}>
       <p
         style={{
           marginBottom: "24px",
