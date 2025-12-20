@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { MeCaptchaClient } from "@mecaptcha/verify-sdk";
 import type { VerifyCodeResult } from "@mecaptcha/verify-sdk";
 
@@ -6,6 +6,8 @@ export interface UseMeCaptchaVerifyOptions {
   onVerify?: (result: VerifyCodeResult) => void;
   onError?: (error: Error) => void;
   baseUrl?: string;
+  initialPhoneNumber?: string;
+  initialCountryCode?: string;
 }
 
 export function useMeCaptchaVerify(
@@ -15,10 +17,38 @@ export function useMeCaptchaVerify(
   const [client] = useState(
     () => new MeCaptchaClient(apiKey, { baseUrl: options?.baseUrl }),
   );
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [countryCode, setCountryCode] = useState("+1");
+  
+  // Parse initial phone number if provided
+  const parsePhoneNumber = useCallback((phone?: string, countryCode?: string) => {
+    if (!phone) return { phoneNumber: "", countryCode: countryCode || "+1" };
+    
+    // If phone starts with +, extract country code
+    if (phone.startsWith("+")) {
+      // Try to extract country code (assume 1-3 digits after +)
+      const match = phone.match(/^\+(\d{1,3})(.+)$/);
+      if (match) {
+        return {
+          phoneNumber: match[2].replace(/\D/g, ""),
+          countryCode: `+${match[1]}`,
+        };
+      }
+    }
+    
+    // Otherwise use provided country code or default
+    return {
+      phoneNumber: phone.replace(/\D/g, ""),
+      countryCode: countryCode || "+1",
+    };
+  }, []);
+  
+  const initial = parsePhoneNumber(options?.initialPhoneNumber, options?.initialCountryCode);
+  const [phoneNumber, setPhoneNumber] = useState(initial.phoneNumber);
+  const [countryCode, setCountryCode] = useState(initial.countryCode);
   const [code, setCode] = useState("");
-  const [step, setStep] = useState<"phone" | "code">("phone");
+  // If initial phone number provided, start at code step
+  const [step, setStep] = useState<"phone" | "code">(
+    initial.phoneNumber.length === 10 ? "code" : "phone"
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasMeCaptcha, setHasMeCaptcha] = useState(false);
@@ -33,6 +63,42 @@ export function useMeCaptchaVerify(
       return () => clearTimeout(timer);
     }
   }, [resendCooldown]);
+
+  // Track previous initialPhoneNumber to prevent unnecessary updates
+  const prevInitialPhoneRef = useRef<string | undefined>(options?.initialPhoneNumber);
+  const isFirstRender = useRef(true);
+
+  // Update phone number when initialPhoneNumber prop changes (skip first render)
+  useEffect(() => {
+    // Skip on first render since we initialize state correctly
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      prevInitialPhoneRef.current = options?.initialPhoneNumber;
+      return;
+    }
+
+    const currentPhone = options?.initialPhoneNumber;
+    const currentCountryCode = options?.initialCountryCode;
+    
+    // Only update if the values actually changed
+    if (
+      currentPhone !== undefined &&
+      currentPhone !== prevInitialPhoneRef.current
+    ) {
+      const parsed = parsePhoneNumber(currentPhone, currentCountryCode);
+      setPhoneNumber(parsed.phoneNumber);
+      if (parsed.countryCode) {
+        setCountryCode(parsed.countryCode);
+      }
+      // If phone is valid, move to code step
+      if (parsed.phoneNumber.length === 10) {
+        setStep("code");
+      }
+      
+      // Update ref
+      prevInitialPhoneRef.current = currentPhone;
+    }
+  }, [options?.initialPhoneNumber, options?.initialCountryCode]);
 
   const getFullPhoneNumber = useCallback(() => {
     return `${countryCode}${phoneNumber}`;

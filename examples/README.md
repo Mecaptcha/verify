@@ -30,7 +30,35 @@ Then open http://localhost:5173 in your browser.
 - Phone: `+18025551212`
 - Code: `123456`
 
-### 2. Protect Wrapper Example
+### 2. External Phone Example
+
+An example showing how to use MeCaptcha with an external phone number input.
+
+**Location:** `external-phone/`
+
+**Features:**
+- External phone number collection (outside MeCaptcha)
+- `useMeCaptchaRef` hook for easy integration
+- Phone validation helpers
+- MeCaptcha handles only code sending and verification
+- No race conditions - phone can change freely
+
+**Run:**
+```bash
+cd examples/external-phone
+pnpm install
+pnpm dev
+```
+
+Then open http://localhost:5173 in your browser.
+
+**Use Case:**
+- Your app collects phone number (e.g., during signup)
+- MeCaptcha sends verification code
+- MeCaptcha shows code input screen
+- MeCaptcha calls `onVerify` when verified
+
+### 3. Protect Wrapper Example
 
 An example showing the `<MeCaptchaProtect />` wrapper component that hides content until verified.
 

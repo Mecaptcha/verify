@@ -42,6 +42,13 @@ Standalone verification component with full UI flow.
 - `defaultCountryCode` (string, optional) - Default country code (default: "+1")
 - `theme` (string, optional) - "light" | "dark" | "auto"
 - `showBranding` (boolean, optional) - Show MeCaptcha logo (default: true)
+- `phoneNumber` (string, optional) - External phone number (skips phone input, shows code input)
+- `countryCode` (string, optional) - Country code when using external phone number
+- `baseUrl` (string, optional) - Custom API base URL
+
+**Ref Methods (when using external phone number):**
+- `ref.current.sendCode()` - Send verification code to the phone number
+- `ref.current.verifyCode(code: string)` - Verify a code manually
 
 **Example:**
 ```tsx
@@ -133,6 +140,54 @@ function CustomVerify() {
 }
 ```
 
+### `useMeCaptchaRef(options?)`
+
+Hook to simplify using MeCaptcha with external phone number control. Provides validation helpers and convenient ref management.
+
+**Options:**
+- `phoneNumber` (string, optional) - Phone number to validate
+- `countryCode` (string, optional) - Country code (default: "+1")
+
+**Returns:**
+```typescript
+{
+  ref: RefObject<MeCaptchaHandle>;
+  isValidPhone: boolean;
+  sendCode: () => Promise<void>;
+  fullPhoneNumber: string | null;
+}
+```
+
+**Example:**
+```tsx
+function MyComponent() {
+  const [phoneNumber, setPhoneNumber] = useState('');
+  
+  const { ref, isValidPhone, sendCode } = useMeCaptchaRef({
+    phoneNumber,
+    countryCode: '+1'
+  });
+
+  return (
+    <>
+      <input
+        value={phoneNumber}
+        onChange={(e) => setPhoneNumber(e.target.value)}
+      />
+      <button onClick={sendCode} disabled={!isValidPhone}>
+        Send Code
+      </button>
+      <MeCaptcha
+        ref={ref}
+        apiKey="mec_live_..."
+        phoneNumber={phoneNumber}
+        onVerify={handleVerify}
+      />
+    </>
+  );
+}
+```
+
 ### `useMeCaptchaContext()`
 
 Access verification state within `<MeCaptchaProtect>`.
@@ -192,6 +247,8 @@ Components use inline styles with theme support. Colors adapt to system dark mod
 ✅ **Dark Mode** - Auto-detects system preference  
 ✅ **Accessible** - ARIA labels, keyboard navigation  
 ✅ **Mobile Friendly** - Responsive design  
+✅ **External Phone Control** - Use your own phone input, MeCaptcha handles code verification  
+✅ **React 18 & 19 Support** - Works with both versions  
 
 ## TypeScript
 

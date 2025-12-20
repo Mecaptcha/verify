@@ -8,6 +8,9 @@ export interface MeCaptchaProps {
   theme?: "light" | "dark" | "auto";
   showBranding?: boolean;
   baseUrl?: string;
+  // External phone number control
+  phoneNumber?: string;
+  countryCode?: string;
 }
 
 export interface MeCaptchaProtectProps {
@@ -44,6 +47,11 @@ export interface CodeInputProps {
 
 export interface DownloadPromptProps {
   show: boolean;
+}
+
+export interface MeCaptchaHandle {
+  sendCode: () => Promise<void>;
+  verifyCode: (code: string) => Promise<void>;
 }
 
 

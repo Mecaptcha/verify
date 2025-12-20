@@ -2,18 +2,23 @@ import { useMeCaptchaVerify } from "./hooks/useMeCaptchaVerify";
 import { PhoneInput } from "./components/PhoneInput";
 import { CodeInput } from "./components/CodeInput";
 import { DownloadPrompt } from "./components/DownloadPrompt";
-import type { MeCaptchaProps } from "./types";
+import type { MeCaptchaProps, MeCaptchaHandle } from "./types";
 import { colors } from "./theme";
-import { useState, useEffect } from "react";
+import { useState, useEffect, forwardRef, useImperativeHandle } from "react";
 
-export function MeCaptcha({
-  apiKey,
-  onVerify,
-  onError,
-  defaultCountryCode = "+1",
-  showBranding = true,
-  baseUrl,
-}: MeCaptchaProps) {
+export const MeCaptcha = forwardRef<MeCaptchaHandle, MeCaptchaProps>(function MeCaptcha(
+  {
+    apiKey,
+    onVerify,
+    onError,
+    defaultCountryCode = "+1",
+    showBranding = true,
+    baseUrl,
+    phoneNumber: externalPhoneNumber,
+    countryCode: externalCountryCode,
+  },
+  ref,
+) {
   const [theme] = useState<"light" | "dark">(() => "light");
   const themeColors = colors[theme];
 
@@ -32,7 +37,19 @@ export function MeCaptcha({
     sendCode,
     verifyCode,
     editNumber,
-  } = useMeCaptchaVerify(apiKey, { onVerify, onError, baseUrl });
+  } = useMeCaptchaVerify(apiKey, {
+    onVerify,
+    onError,
+    baseUrl,
+    initialPhoneNumber: externalPhoneNumber,
+    initialCountryCode: externalCountryCode || defaultCountryCode,
+  });
+
+  // Expose imperative handle for ref
+  useImperativeHandle(ref, () => ({
+    sendCode,
+    verifyCode: (codeValue: string) => verifyCode(codeValue),
+  }));
 
   useEffect(() => {
     if (countryCode === "+1" && defaultCountryCode !== "+1") {
@@ -54,7 +71,7 @@ export function MeCaptcha({
         fontFamily: "system-ui, -apple-system, sans-serif",
       }}
     >
-      {step === "phone" ? (
+      {step === "phone" && !externalPhoneNumber ? (
         <PhoneInput
           value={phoneNumber}
           onChange={setPhoneNumber}
@@ -78,22 +95,24 @@ export function MeCaptcha({
             resendCooldown={resendCooldown}
           />
 
-          <button
-            type="button"
-            onClick={editNumber}
-            style={{
-              marginTop: "16px",
-              background: "none",
-              border: "none",
-              color: themeColors.primary,
-              fontSize: "14px",
-              cursor: "pointer",
-              textDecoration: "underline",
-              width: "100%",
-            }}
-          >
-            Change phone number
-          </button>
+          {!externalPhoneNumber && (
+            <button
+              type="button"
+              onClick={editNumber}
+              style={{
+                marginTop: "16px",
+                background: "none",
+                border: "none",
+                color: themeColors.primary,
+                fontSize: "14px",
+                cursor: "pointer",
+                textDecoration: "underline",
+                width: "100%",
+              }}
+            >
+              Change phone number
+            </button>
+          )}
 
           <DownloadPrompt show={!hasMeCaptcha} />
         </>
@@ -139,7 +158,4 @@ export function MeCaptcha({
       )}
     </div>
   );
-}
-
-
-
+});

@@ -43,15 +43,34 @@ npm install @mecaptcha/verify-react
 ```tsx
 import { MeCaptcha } from '@mecaptcha/verify-react';
 
+// Full flow (phone input + code input)
 <MeCaptcha 
   apiKey="mec_live_..."
   onVerify={(result) => console.log('Verified!', result)}
 />
+
+// External phone number (code input only)
+import { useMeCaptchaRef } from '@mecaptcha/verify-react';
+
+const { ref, isValidPhone, sendCode } = useMeCaptchaRef({
+  phoneNumber: "8025551212",
+  countryCode: "+1"
+});
+
+<MeCaptcha
+  ref={ref}
+  apiKey="mec_live_..."
+  phoneNumber="8025551212"
+  onVerify={handleVerify}
+/>
+<button onClick={sendCode} disabled={!isValidPhone}>
+  Send Code
+</button>
 ```
 
 ## Quick Start
 
-1. **Get an API key** from [MeCaptcha Dashboard](https://mecaptcha.com/dashboard)
+1. **Get an API key** from [MeCaptcha Dashboard](https://mecaptcha.com)
    
    **Or use the demo key for testing:**
    - API Key: `demo`
@@ -84,8 +103,9 @@ function App() {
 
 ## Examples
 
-- [Basic React App](./examples/basic-react)
-- [Protect Wrapper](./examples/protect-wrapper)
+- [Basic React App](./examples/basic-react) - Full flow with phone input
+- [External Phone](./examples/external-phone) - Use your own phone input
+- [Protect Wrapper](./examples/protect-wrapper) - Protect content until verified
 
 ## Documentation
 
@@ -110,10 +130,6 @@ function App() {
 - ✅ Open source
 - ✅ Self-contained (no complex dashboards)
 
-## Contributing
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup and guidelines.
-
 ## License
 
 MIT License - see [LICENSE](./LICENSE)
@@ -122,7 +138,6 @@ MIT License - see [LICENSE](./LICENSE)
 
 - 📧 Email: support@mecaptcha.com
 - 🐛 Issues: [GitHub Issues](https://github.com/Mecaptcha/verify/issues)
-- 💬 Discord: [MeCaptcha Community](https://discord.gg/mecaptcha)
 
 
 

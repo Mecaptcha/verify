@@ -1,6 +1,6 @@
 {
   "name": "@mecaptcha/verify-react",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "React components for MeCaptcha SMS verification",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
